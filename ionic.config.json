@@ -1,0 +1,7 @@
+{
+  "name": "journal-maps-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
