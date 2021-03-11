@@ -3,7 +3,7 @@
     <ion-page>
       <ion-header :translucent="true">
         <ion-toolbar>
-          <ion-title>Journal Maps</ion-title>
+          <ion-title @click="navigateToHome()">Journal Maps</ion-title>
           <ion-title slot="end" size="small">
             <router-link to="/login">Login</router-link>
           </ion-title>
@@ -26,8 +26,9 @@
 </template>
 
 <script lang="ts">
-import { IonApp, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import { defineComponent } from 'vue';
+import { IonApp, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+import router from './router';
 
 export default defineComponent({
   name: 'App',
@@ -38,6 +39,11 @@ export default defineComponent({
     IonPage,
     IonTitle,
     IonToolbar
+  },
+  methods: {
+    navigateToHome() {
+      router.push('home');
+    }
   }
 });
 </script>
