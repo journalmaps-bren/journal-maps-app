@@ -34,6 +34,7 @@ import {
   IonCol,
   IonButton
 } from '@ionic/vue';
+import router from '../../router/index';
 import { auth } from '../../firebase-util';
 
 export default defineComponent({
@@ -53,16 +54,21 @@ export default defineComponent({
     }
   },
   methods: {
-    registerUser(loginType) {      
+    async registerUser(loginType) {      
       if (loginType === 'email') {
-        auth.createUserWithEmailAndPassword(this.email, this.password)
-          .catch(function(error) {
-            if (error.code == 'auth/weak-password') {
-              console.log('your moves are weak');
-            } else {
-              console.log(error.message);
-            }
-          });        
+        try {
+          const user = await auth.createUserWithEmailAndPassword(this.email, this.password);
+          this.setUserData(user);
+          this.authenticateUser(true);
+          router.push('/');
+        } catch (error) {
+          this.authenticateUser(false);
+          if (error.code == 'auth/weak-password') {
+            console.log('your moves are weak');
+          } else {
+            console.log(error.message);
+          }
+        }
       }
     }
   },
