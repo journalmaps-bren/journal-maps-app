@@ -1,5 +1,7 @@
 <template>
-  <form @submit.prevent="loginUser('email')">
+  <form @submit.prevent="registerUser('email')">
+    <h3>Sign Up</h3>
+
     <ion-item lines="full">
       <ion-label position="floating">Email</ion-label>
       <ion-input type="text" v-model="email" required></ion-input>
@@ -12,12 +14,14 @@
 
     <ion-row>
       <ion-col>
-        <ion-button type="submit" color="primary" expand="block">Sign In</ion-button>
+        <ion-button type="submit" color="primary" expand="block">Sign Up</ion-button>
       </ion-col>
     </ion-row>
-  </form>
 
-  {{ isLoggedIn }}
+    <div>
+      Already registered? Sign in <router-link to="/login">here</router-link>
+    </div>
+  </form>
 </template>
 
 <script lang="ts">
@@ -30,7 +34,7 @@ import {
   IonCol,
   IonButton
 } from '@ionic/vue';
-import { auth } from '../firebase-util';
+import { auth } from '../../firebase-util';
 
 export default defineComponent({
   name: 'Login',
@@ -49,9 +53,16 @@ export default defineComponent({
     }
   },
   methods: {
-    loginUser(loginType) {      
+    registerUser(loginType) {      
       if (loginType === 'email') {
-        auth.signInWithEmailAndPassword(this.email, this.password);
+        auth.createUserWithEmailAndPassword(this.email, this.password)
+          .catch(function(error) {
+            if (error.code == 'auth/weak-password') {
+              console.log('your moves are weak');
+            } else {
+              console.log(error.message);
+            }
+          });        
       }
     }
   },
