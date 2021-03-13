@@ -18,6 +18,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Register',
     component: () => import( /* webpackChunkName: "login" */ '../pages/auth/Register.vue')
   },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import( /* webpackChunkName: "login" */ '../pages/UserProfile.vue')
+  },
 ]
 
 const router = createRouter({

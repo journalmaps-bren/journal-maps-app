@@ -33,8 +33,26 @@ import {
   IonButton
 } from '@ionic/vue';
 import { auth } from '../../firebase-util';
+import router from '../../router/index';
+import { useStore } from 'vuex';
 
 export default defineComponent({
+  setup() {
+    const store = useStore();
+
+    function authenticateUser(isAuthenticated: boolean) {
+      store.commit('SET_LOGGED_IN', isAuthenticated);
+    }
+
+    function setUserData(data) {
+      store.commit('SET_USER', data)
+    }
+
+    return {
+      authenticateUser,
+      setUserData
+    }
+  },
   name: 'Login',
   components: {
     IonItem,
@@ -51,17 +69,20 @@ export default defineComponent({
     }
   },
   methods: {
-    loginUser(loginType) {      
+    async loginUser(loginType) {
       if (loginType === 'email') {
-        auth.signInWithEmailAndPassword(this.email, this.password);
+        try {
+          const user = await auth.signInWithEmailAndPassword(this.email, this.password);
+          this.setUserData(user);
+          this.authenticateUser(true);
+          router.push('/');
+        } catch (error) {
+          this.authenticateUser(false);
+          console.log(error);
+        }
       }
     }
   },
-  computed: {
-    isLoggedIn() {
-      return !!auth.currentUser;
-    }
-  }
 });
 
 </script>

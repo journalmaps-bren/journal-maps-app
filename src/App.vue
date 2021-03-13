@@ -5,7 +5,8 @@
         <ion-toolbar>
           <ion-title @click="navigateToHome()">Journal Maps</ion-title>
           <ion-title slot="end" size="small">
-            <router-link to="/login">Login</router-link>
+            <router-link v-if="user.loggedIn" to="/profile">Profile</router-link>
+            <router-link v-else to="/login">Login</router-link>
           </ion-title>
         </ion-toolbar>
       </ion-header>
@@ -29,8 +30,25 @@
 import { defineComponent } from 'vue';
 import { IonApp, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import router from './router';
+import { useStore, mapGetters } from 'vuex';
 
 export default defineComponent({
+  setup() {
+    const store = useStore();
+
+    function authenticateUser(isAuthenticated: boolean) {
+      store.commit('SET_LOGGED_IN', isAuthenticated);
+    }
+
+    function setUserData(data) {
+      store.commit('SET_USER', data)
+    }
+
+    return {
+      authenticateUser,
+      setUserData,
+    }
+  },
   name: 'App',
   components: {
     IonApp,
@@ -42,8 +60,13 @@ export default defineComponent({
   },
   methods: {
     navigateToHome() {
-      router.push('home');
+      router.push('/');
     }
+  },
+  computed: {
+    ...mapGetters({
+      user: 'user'
+    })
   }
 });
 </script>
