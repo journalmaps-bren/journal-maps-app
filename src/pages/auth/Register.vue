@@ -72,11 +72,6 @@ export default defineComponent({
       }
     }
   },
-  computed: {
-    isLoggedIn() {
-      return !!auth.currentUser;
-    }
-  }
 });
 
 </script>
