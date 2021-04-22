@@ -9,16 +9,6 @@ const routes: Array<RouteRecordRaw> = [
 		component: Home
 	},
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import( /* webpackChunkName: "login" */ '../pages/auth/Login.vue')
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: () => import( /* webpackChunkName: "login" */ '../pages/auth/Register.vue')
-  },
-  {
     path: '/profile',
     name: 'Profile',
     component: () => import( /* webpackChunkName: "login" */ '../pages/UserProfile.vue')

@@ -2,9 +2,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
 import { store } from './store';
-import { auth } from './firebase-util';
 
 import { IonicVue } from '@ionic/vue';
+
+import { authConfig } from "../auth_config.js";
+import { Auth0 } from './auth/index';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/vue/css/core.css';
@@ -25,15 +27,27 @@ import '@ionic/vue/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-auth.onAuthStateChanged(user => {
-  store.dispatch('getUser', user);
-});
-
-const app = createApp(App)
-  .use(IonicVue)
-  .use(router)
-  .use(store);
+async function init() {
+  const AuthPlugin = await Auth0.init({
+    onRedirectCallback: (appState) => {
+        router.push(
+          appState && appState.targetUrl
+              ? appState.targetUrl
+              : window.location.pathname,
+        )
+    },
+    ...authConfig
+  });
   
-router.isReady().then(() => {
-  app.mount('#app');
-});
+  const app = createApp(App)
+    .use(IonicVue)
+    .use(AuthPlugin)
+    .use(router)
+    .use(store);
+    
+  router.isReady().then(() => {
+    app.mount('#app')
+  });
+}
+
+init();

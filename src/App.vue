@@ -5,8 +5,10 @@
         <ion-toolbar>
           <ion-title @click="navigateToHome()">Journal Maps</ion-title>
           <ion-title slot="end" size="small">
-            <router-link v-if="user.loggedIn" to="/profile">Profile</router-link>
-            <router-link v-else to="/login">Login</router-link>
+            <div v-if="!loading">
+              <router-link v-if="isAuthenticated" to="/profile">Profile</router-link>
+              <button v-else @click="login()">Log in</button>
+            </div>
           </ion-title>
         </ion-toolbar>
       </ion-header>
@@ -27,29 +29,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, inject } from 'vue';
 import { IonApp, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
 import router from './router';
-import { useStore, mapGetters } from 'vuex';
 
 export default defineComponent({
   setup() {
-    const store = useStore();
-
-    function authenticateUser(isAuthenticated: boolean) {
-      store.commit('SET_LOGGED_IN', isAuthenticated);
-    }
-
-    function setUserData(data) {
-      store.commit('SET_USER', data)
-    }
-
-    return {
-      authenticateUser,
-      setUserData,
-    }
+    const auth = inject('Auth');
+    return auth;
   },
   name: 'App',
+  inject: ['Auth'],
   components: {
     IonApp,
     IonContent,
@@ -61,13 +51,11 @@ export default defineComponent({
   methods: {
     navigateToHome() {
       router.push('/');
+    },
+    login() {
+      this.Auth.loginWithRedirect();
     }
   },
-  computed: {
-    ...mapGetters({
-      user: 'user'
-    })
-  }
 });
 </script>
 
